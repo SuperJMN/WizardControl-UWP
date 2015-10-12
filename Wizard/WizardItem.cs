@@ -25,23 +25,43 @@ namespace Wizard
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             wizardControl = UIMixin.FindAncestor<WizardControl>(this);
-            PreviousCommand = wizardControl.GoBackCommand;
-            NextCommand = wizardControl.GoNextCommand;
+            PreviousCommand = new RelayCommand(() => wizardControl.GoBackCommand.Execute(null), () => wizardControl.GoBackCommand.CanExecute(null));
+            NextCommand = new RelayCommand(() => wizardControl.GoNextCommand.Execute(null), () => wizardControl.GoNextCommand.CanExecute(null) && IsValid);
             ExecuteCommand = wizardControl.ExecuteCommand;
 
             var vssHost = wizardControl.GetChildOfType<Border>();
             var stateGroups = VisualStateManager.GetVisualStateGroups(vssHost);
 
             sizeModes = stateGroups.First(stateGroup => stateGroup.Name == "SizeModes");
-            UpdateSizeStates();
-            UpdateIsValidStates();
             sizeModes.CurrentStateChanged += SizeModesOnCurrentStateChanged;
             wizardControl.SelectionChanged += WizardControlOnSelectionChanged;
+
+            UpdateSizeStates();
+            UpdateIsValidStates();
+            UpdateFinishStates();
         }
+
+        private void UpdateFinishStates()
+        {
+            if (IsLast)
+            {
+                VisualStateManager.GoToState(this, "Last", false);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, "NonLast", false);
+            }
+        }
+
+        public bool IsLast => wizardControl.IndexFromContainer(this) == wizardControl.Items.Count - 1;
+        public bool IsBeforeCurrent => wizardControl.IndexFromContainer(this) < wizardControl.SelectedIndex;
+        public bool IsAfterCurrent => wizardControl.IndexFromContainer(this) > wizardControl.SelectedIndex;
+        public bool IsCurrent => wizardControl.IndexFromContainer(this) == wizardControl.SelectedIndex;
 
         private void WizardControlOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
             UpdateSizeStates();
+            PreviousCommand.RaiseCanExecuteChanged();
         }
 
         private void SizeModesOnCurrentStateChanged(object sender, VisualStateChangedEventArgs visualStateChangedEventArgs)
@@ -51,65 +71,18 @@ namespace Wizard
 
         private void UpdateSizeStates()
         {
-            var selectedItem = wizardControl.SelectedItem;
-            if (sizeModes.CurrentState.Name == "Full")
+            if (IsBeforeCurrent)
             {
-                SetExpandedStateBasedOnOrder();
+                VisualStateManager.GoToState(this, "BeforeCurrent", false);
+            }
+            else if (IsAfterCurrent)
+            {
+                VisualStateManager.GoToState(this, "AfterCurrent", false);
             }
             else
-            {
-
-                SetCompactStateBasedOnOrder(selectedItem);
-            }
-        }
-
-        private void SetExpandedStateBasedOnOrder()
-        {
-            var id = wizardControl.IndexFromContainer(this);
-            var last = wizardControl.Items.Count - 1;
-
-            if (id == last)
-            {
-                VisualStateManager.GoToState(this, "LastExpanded", false);
-            }
-            else
-            {
-                VisualStateManager.GoToState(this, "Normal", false);
-            }
-        }
-
-        private void SetCompactStateBasedOnOrder(object selectedItem)
-        {
-            if (selectedItem == null)
-            {
-                GoToNone();
-            }
-
-            var id = wizardControl.IndexFromContainer(this);
-            var last = wizardControl.Items.Count - 1;
-            var current = wizardControl.SelectedIndex;
-
-            if (id < current)
-            {
-                VisualStateManager.GoToState(this, "Previous", false);
-            }
-            else if (id == last)
-            {
-                VisualStateManager.GoToState(this, "LastCompact", false);
-            }
-            else if (id == current)
             {
                 VisualStateManager.GoToState(this, "Current", false);
             }
-            else
-            {
-                VisualStateManager.GoToState(this, "Next", false);
-            }
-        }
-
-        private void GoToNone()
-        {
-            VisualStateManager.GoToState(this, "None", false);
         }
 
         public static readonly DependencyProperty NextCommandProperty = DependencyProperty.Register(
@@ -147,7 +120,10 @@ namespace Wizard
         private static void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var source = (WizardItem)dependencyObject;
+            
             source.UpdateIsValidStates();
+            source.NextCommand.RaiseCanExecuteChanged();
+            source.PreviousCommand.RaiseCanExecuteChanged();
         }
 
         private void UpdateIsValidStates()

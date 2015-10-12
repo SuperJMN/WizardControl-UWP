@@ -29,8 +29,8 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <ItemsPresenter />
-                                <Button Grid.Row="1" HorizontalAlignment="Center" Content="Ejecutar"
-                                        Command="{TemplateBinding ExecuteCommand}" />
+                                <!--<Button Grid.Row="1" HorizontalAlignment="Center" Content="Ejecutar"
+                                        Command="{TemplateBinding ExecuteCommand}" />-->
                             </Grid>
                         </Border>
                     </Border>
@@ -50,48 +50,50 @@
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="SnappedModes">
-                                
+
                                 <VisualStateGroup.States>
-                                    <VisualState x:Name="Previous">
+                                    <VisualState x:Name="BeforeCurrent">
                                         <VisualState.Setters>
                                             <Setter Target="Briefing.Visibility" Value="Visible" />
                                             <Setter Target="ContentRoot.Visibility" Value="Collapsed" />
-                                            <Setter Target="Navigation.Visibility" Value="Collapsed" />
-                                            <Setter Target="ExecuteCommand.Visibility" Value="Collapsed" />
                                         </VisualState.Setters>
                                     </VisualState>
-                                    
+
                                     <VisualState x:Name="Current">
                                         <VisualState.Setters>
                                             <Setter Target="Briefing.Visibility" Value="Collapsed" />
                                             <Setter Target="ContentRoot.Visibility" Value="Visible" />
-                                            <Setter Target="Navigation.Visibility" Value="Visible" />
-                                            <Setter Target="ExecuteCommand.Visibility" Value="Collapsed" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    
-                                    <VisualState x:Name="Next">
-                                        <VisualState.Setters>
-                                            <Setter Target="Briefing.Visibility" Value="Collapsed" />
-                                            <Setter Target="ContentRoot.Visibility" Value="Collapsed" />
-                                            <Setter Target="Navigation.Visibility" Value="Collapsed" />
-                                            <Setter Target="ExecuteCommand.Visibility" Value="Collapsed" />
                                         </VisualState.Setters>
                                     </VisualState>
 
-                                    <VisualState x:Name="LastCompact">
+                                    <VisualState x:Name="AfterCurrent">
                                         <VisualState.Setters>
                                             <Setter Target="Briefing.Visibility" Value="Collapsed" />
-                                            <Setter Target="ContentRoot.Visibility" Value="Visible" />
-                                            <Setter Target="Navigation.Visibility" Value="Collapsed" />
+                                            <Setter Target="ContentRoot.Visibility" Value="Collapsed" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                </VisualStateGroup.States>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="FinishState">
+                                <VisualStateGroup.States>
+                                    <VisualState x:Name="NonLast">
+                                        <VisualState.Setters>
+                                            <Setter Target="ExecuteCommand.Visibility" Value="Collapsed" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Last">
+                                        <VisualState.Setters>
                                             <Setter Target="ExecuteCommand.Visibility" Value="Visible" />
+                                            <Setter Target="NextButton.Visibility" Value="Collapsed" />
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup.States>
                             </VisualStateGroup>
-                            
+
                             <VisualStateGroup x:Name="ExpandedModes">
-                                
+
                                 <VisualState x:Name="Normal">
                                     <VisualState.Setters>
                                         <Setter Target="Briefing.Visibility" Value="Collapsed" />
@@ -112,23 +114,23 @@
                                 </VisualState>
 
                             </VisualStateGroup>
-                            
+
                             <VisualStateGroup x:Name="Validation">
-                                
+
                                 <VisualState x:Name="Valid">
                                     <VisualState.Setters>
-                                        <Setter Target="NextButton.Visibility" Value="Visible" />                                        
+                                        <!--<Setter Target="NextButton.Visibility" Value="Visible" />-->
                                     </VisualState.Setters>
                                 </VisualState>
-                                
+
                                 <VisualState x:Name="Invalid">
                                     <VisualState.Setters>
-                                        <Setter Target="NextButton.Visibility" Value="Collapsed" />                                        
+                                        <!--<Setter Target="NextButton.Visibility" Value="Collapsed" />-->
                                     </VisualState.Setters>
                                 </VisualState>
-                                
+
                             </VisualStateGroup>
-                            
+
                         </VisualStateManager.VisualStateGroups>
 
                         <Grid>
@@ -146,10 +148,10 @@
                                         <Button x:Name="BackButton" HorizontalAlignment="Left" Content="&lt;Anterior"
                                                 Command="{TemplateBinding PreviousCommand}" />
                                         <Button x:Name="NextButton" HorizontalAlignment="Right" Content="Siguiente&gt;"
-                                                Command="{TemplateBinding NextCommand}" />                                        
-                                    </Grid>
-                                    <Button x:Name="ExecuteCommand" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Ejecutar"
+                                                Command="{TemplateBinding NextCommand}" />
+                                        <Button x:Name="ExecuteCommand" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Ejecutar"
                                                 Command="{TemplateBinding ExecuteCommand}" />
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </Grid>
