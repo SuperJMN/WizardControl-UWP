@@ -49,18 +49,34 @@ namespace Wizard
 
         private void UpdateStates()
         {
+            var selectedItem = selector.SelectedItem;
             if (sizeModes.CurrentState.Name == "Full")
             {
-                VisualStateManager.GoToState(this, "Full", false);
+                SetExpandedStateBasedOnOrder();
             }
             else
             {
-                var selectedItem = selector.SelectedItem;
-                SetStateBasedOnOrder(selectedItem);
+                
+                SetCompactStateBasedOnOrder(selectedItem);
             }
         }
 
-        private void SetStateBasedOnOrder(object selectedItem)
+        private void SetExpandedStateBasedOnOrder()
+        {
+            var id = selector.IndexFromContainer(this);
+            var last = selector.Items.Count - 1;
+
+            if (id == last)
+            {
+                VisualStateManager.GoToState(this, "Last", false);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, "Normal", false);
+            }
+        }
+
+        private void SetCompactStateBasedOnOrder(object selectedItem)
         {
             if (selectedItem == null)
             {

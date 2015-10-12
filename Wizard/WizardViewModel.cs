@@ -18,7 +18,6 @@ namespace App4
                 new WizardPageViewModel {Name = "PRIMERO", IsValid = false},
                 new WizardPageViewModel {Name = "SEGUNDO", IsValid = false},
                 new WizardPageViewModel {Name = "TERCERO", IsValid = false},
-                new WizardPageViewModel {Name = "CUARTO", IsValid = true},
             };
 
             foreach (var wizardPageViewModel in Wizards)

@@ -49,15 +49,9 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
 
                         <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="SizeModes">
+                            <VisualStateGroup x:Name="SnappedModes">
+                                
                                 <VisualStateGroup.States>
-                                    <VisualState x:Name="Current">
-                                        <VisualState.Setters>
-                                            <Setter Target="Briefing.Visibility" Value="Collapsed" />
-                                            <Setter Target="ContentRoot.Visibility" Value="Visible" />
-                                            <Setter Target="Navigation.Visibility" Value="Visible" />
-                                        </VisualState.Setters>
-                                    </VisualState>
                                     <VisualState x:Name="Previous">
                                         <VisualState.Setters>
                                             <Setter Target="Briefing.Visibility" Value="Visible" />
@@ -65,6 +59,15 @@
                                             <Setter Target="Navigation.Visibility" Value="Collapsed" />
                                         </VisualState.Setters>
                                     </VisualState>
+                                    
+                                    <VisualState x:Name="Current">
+                                        <VisualState.Setters>
+                                            <Setter Target="Briefing.Visibility" Value="Collapsed" />
+                                            <Setter Target="ContentRoot.Visibility" Value="Visible" />
+                                            <Setter Target="Navigation.Visibility" Value="Visible" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    
                                     <VisualState x:Name="Next">
                                         <VisualState.Setters>
                                             <Setter Target="Briefing.Visibility" Value="Collapsed" />
@@ -72,34 +75,47 @@
                                             <Setter Target="Navigation.Visibility" Value="Collapsed" />
                                         </VisualState.Setters>
                                     </VisualState>
-                                    <VisualState x:Name="Full">
-                                        <VisualState.Setters>
-                                            <Setter Target="Briefing.Visibility" Value="Collapsed" />
-                                            <Setter Target="ContentRoot.Visibility" Value="Visible" />
-                                            <Setter Target="Navigation.Visibility" Value="Collapsed" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="None">
-                                        <VisualState.Setters>
-                                            <Setter Target="Briefing.Visibility" Value="Visible" />
-                                            <Setter Target="ContentRoot.Visibility" Value="Visible" />
-                                            <Setter Target="Navigation.Visibility" Value="Visible" />
-                                        </VisualState.Setters>
-                                    </VisualState>
                                 </VisualStateGroup.States>
                             </VisualStateGroup>
+                            
+                            <VisualStateGroup x:Name="ExpandedModes">
+                                
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Target="Briefing.Visibility" Value="Collapsed" />
+                                        <Setter Target="ContentRoot.Visibility" Value="Visible" />
+                                        <Setter Target="Navigation.Visibility" Value="Collapsed" />
+                                        <Setter Target="ContentRoot.Background" Value="Blue" />
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="Last">
+                                    <VisualState.Setters>
+                                        <Setter Target="Briefing.Visibility" Value="Collapsed" />
+                                        <Setter Target="ContentRoot.Visibility" Value="Visible" />
+                                        <Setter Target="ContentRoot.Background" Value="Green" />
+                                        <Setter Target="Navigation.Visibility" Value="Collapsed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                            </VisualStateGroup>
+                            
                             <VisualStateGroup x:Name="Validation">
+                                
                                 <VisualState x:Name="Valid">
                                     <VisualState.Setters>
                                         <Setter Target="NextButton.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
+                                
                                 <VisualState x:Name="Invalid">
                                     <VisualState.Setters>
                                         <Setter Target="NextButton.Visibility" Value="Collapsed" />
                                     </VisualState.Setters>
                                 </VisualState>
+                                
                             </VisualStateGroup>
+                            
                         </VisualStateManager.VisualStateGroups>
 
                         <Grid>
