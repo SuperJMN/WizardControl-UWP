@@ -14,7 +14,7 @@ namespace Wizard
 
     public sealed class WizardItem : ContentControl
     {
-        private Selector selector;
+        private WizardControl selector;
 
         public WizardItem()
         {
@@ -24,8 +24,9 @@ namespace Wizard
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            selector = UIMixin.FindAncestor<Selector>(this);
-
+            selector = UIMixin.FindAncestor<WizardControl>(this);
+            PreviousCommand = selector.GoBackCommand;
+            NextCommand = selector.GoNextCommand;
 
             var vssHost = selector.GetChildOfType<Border>();
             var stateGroups = VisualStateManager.GetVisualStateGroups(vssHost);
@@ -36,23 +37,45 @@ namespace Wizard
         private void SizeModesOnCurrentStateChanged(object sender, VisualStateChangedEventArgs visualStateChangedEventArgs)
         {
             var selectedItem = selector.SelectedItem;
-            var selectedItemContainer = selector.ContainerFromItem(selectedItem);
+            
 
             if (visualStateChangedEventArgs.NewState.Name == "Full")
             {
-                VisualStateManager.GoToState(this, "Expanded", false);
+                VisualStateManager.GoToState(this, "Full", false);
             }
             else
             {
-                if (selectedItemContainer == this)
-                {
-                    VisualStateManager.GoToState(this, "CurrentCompact", false);
-                }
-                else
-                {
-                    VisualStateManager.GoToState(this, "NonCurrentCompact", false);
-                }
+                SetStateBasedOnOrder(selectedItem);                
             }
+        }
+
+        private void SetStateBasedOnOrder(object selectedItem)
+        {
+            if (selectedItem == null)
+            {
+                GoToNone();
+            }
+
+            var id = selector.IndexFromContainer(this);
+            var current = selector.SelectedIndex;
+
+            if (id <  current)
+            {
+                VisualStateManager.GoToState(this, "Previous", false);
+            }
+            else if (id == current)
+            {
+                VisualStateManager.GoToState(this, "Current", false);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, "Next", false);
+            }
+        }
+
+        private void GoToNone()
+        {
+            VisualStateManager.GoToState(this, "None", false);
         }
 
         public static readonly DependencyProperty NextCommandProperty = DependencyProperty.Register(

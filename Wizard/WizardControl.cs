@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 
 // The Templated Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234235
 
 namespace Wizard
 {
-    using Windows.UI.Xaml.Controls.Primitives;
+    using System.Windows.Input;
     using App4;
+    using GalaSoft.MvvmLight.Command;
 
     public sealed class WizardControl : ListViewBase
     {
@@ -27,6 +21,9 @@ namespace Wizard
             Loaded += OnLoaded;
             SizeChanged += OnSizeChanged;
             SelectionChanged += OnSelectionChanged;
+
+            GoNextCommand = new RelayCommand(() => SelectedIndex++, () => SelectedIndex < Items.Count - 1);
+            GoBackCommand = new RelayCommand(() => SelectedIndex--, () => SelectedIndex > 0);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -50,6 +47,9 @@ namespace Wizard
             {
                 EnsureSelection();
             }
+
+            GoNextCommand.RaiseCanExecuteChanged();
+            GoBackCommand.RaiseCanExecuteChanged();
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
@@ -88,6 +88,30 @@ namespace Wizard
             {
                 SelectedItem = Items.First();
             }
+        }
+
+        public static readonly DependencyProperty GoNextCommandProperty = DependencyProperty.Register(
+            "GoNextCommand",
+            typeof (ICommand),
+            typeof (WizardControl),
+            new PropertyMetadata(default(RelayCommand)));
+
+        public RelayCommand GoNextCommand
+        {
+            get { return (RelayCommand) GetValue(GoNextCommandProperty); }
+            set { SetValue(GoNextCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty GoBackCommandProperty = DependencyProperty.Register(
+            "GoBackCommand",
+            typeof (ICommand),
+            typeof (WizardControl),
+            new PropertyMetadata(default(RelayCommand)));
+
+        public RelayCommand GoBackCommand
+        {
+            get { return (RelayCommand) GetValue(GoBackCommandProperty); }
+            set { SetValue(GoBackCommandProperty, value); }
         }
     }    
 }

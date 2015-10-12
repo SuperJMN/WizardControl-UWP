@@ -14,12 +14,12 @@
         <local:WizardHost Wizards="{Binding Wizards}">
             <local:WizardHost.WizardTemplate>
                 <DataTemplate>
-                    <Border Background="#A8808080" CornerRadius="5">
-                        <StackPanel Orientation="Horizontal" Width="200">
+                    <Grid Background="#A8B4D8A0" CornerRadius="5">
+                        <Grid VerticalAlignment="Center">
                             <TextBlock Text="{Binding Name}" />
-                            <SymbolIcon Symbol="AllApps" />
-                        </StackPanel>
-                    </Border>
+                            <CheckBox HorizontalAlignment="Right" Content="Valido" IsChecked="{Binding IsValid}" />
+                        </Grid>
+                    </Grid>
                 </DataTemplate>
             </local:WizardHost.WizardTemplate>
         </local:WizardHost>
