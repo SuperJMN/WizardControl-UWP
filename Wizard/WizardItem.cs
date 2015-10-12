@@ -30,22 +30,33 @@ namespace Wizard
 
             var vssHost = selector.GetChildOfType<Border>();
             var stateGroups = VisualStateManager.GetVisualStateGroups(vssHost);
-            var sizeModes = stateGroups.First(stateGroup => stateGroup.Name == "SizeModes");
+            
+            sizeModes = stateGroups.First(stateGroup => stateGroup.Name == "SizeModes");
+            UpdateStates();
             sizeModes.CurrentStateChanged += SizeModesOnCurrentStateChanged;
+            selector.SelectionChanged += SelectorOnSelectionChanged;
+        }
+
+        private void SelectorOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        {
+            UpdateStates();
         }
 
         private void SizeModesOnCurrentStateChanged(object sender, VisualStateChangedEventArgs visualStateChangedEventArgs)
         {
-            var selectedItem = selector.SelectedItem;
-            
+            UpdateStates();
+        }
 
-            if (visualStateChangedEventArgs.NewState.Name == "Full")
+        private void UpdateStates()
+        {
+            if (sizeModes.CurrentState.Name == "Full")
             {
                 VisualStateManager.GoToState(this, "Full", false);
             }
             else
             {
-                SetStateBasedOnOrder(selectedItem);                
+                var selectedItem = selector.SelectedItem;
+                SetStateBasedOnOrder(selectedItem);
             }
         }
 
@@ -89,6 +100,8 @@ namespace Wizard
             typeof(ICommand),
             typeof(WizardItem),
             new PropertyMetadata(null));
+
+        private VisualStateGroup sizeModes;
 
         public RelayCommand NextCommand
         {

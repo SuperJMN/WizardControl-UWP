@@ -125,7 +125,7 @@
                                             <Setter Target="WizardControl.ItemsPanel">
                                                 <Setter.Value>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
+                                                        <WrapGrid ItemWidth="500" ItemHeight="400" Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </Setter.Value>
                                             </Setter>

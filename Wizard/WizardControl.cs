@@ -10,7 +10,7 @@ namespace Wizard
     using App4;
     using GalaSoft.MvvmLight.Command;
 
-    public sealed class WizardControl : ListViewBase
+    public sealed class WizardControl : ListView
     {
         private WizardHost host;
 
@@ -32,13 +32,26 @@ namespace Wizard
 
             var vssHost = host.GetChildOfType<Border>();
             var stateGroups = VisualStateManager.GetVisualStateGroups(vssHost);
-            var sizeModes = stateGroups.First(stateGroup => stateGroup.Name == "SizeModes");
+            sizeModes = stateGroups.First(stateGroup => stateGroup.Name == "SizeModes");
+            UpdateState();
             sizeModes.CurrentStateChanged += SizeModesOnCurrentStateChanged;
         }
 
         private void SizeModesOnCurrentStateChanged(object sender, VisualStateChangedEventArgs visualStateChangedEventArgs)
         {
-            VisualStateManager.GoToState(this, visualStateChangedEventArgs.NewState.Name, false);
+            UpdateState();
+        }
+
+        private void UpdateState()
+        {
+            if (sizeModes.CurrentState.Name == "Full")
+            {
+                VisualStateManager.GoToState(this, "Full", false);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, "Compact", false);
+            }
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
@@ -107,6 +120,8 @@ namespace Wizard
             typeof (ICommand),
             typeof (WizardControl),
             new PropertyMetadata(default(RelayCommand)));
+
+        private VisualStateGroup sizeModes;
 
         public RelayCommand GoBackCommand
         {

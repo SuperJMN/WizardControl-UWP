@@ -20,6 +20,10 @@
         {
             selector = UIMixin.FindAncestor<Selector>(this);
             selector.SelectionChanged += SelectorOnSelectionChanged;
+            if (selector.SelectedItem != null)
+            {
+                InvalidateArrange();
+            }
         }
 
         private void SelectorOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
