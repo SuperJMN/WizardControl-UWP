@@ -4,8 +4,10 @@ namespace Wizard
 {
     using System;
     using System.Collections;
+    using System.Windows.Input;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
+    using GalaSoft.MvvmLight.Command;
 
     public sealed class WizardHost : Control
     {
@@ -64,16 +66,28 @@ namespace Wizard
             set { SetValue(SelectedWizardProperty, value); }
         }
 
-        //private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
-        //{
-        //    if (sizeChangedEventArgs.NewSize.Width < 700)
-        //    {
-        //        VisualStateManager.GoToState(this, "Compact", false);
-        //    }
-        //    else
-        //    {
-        //        VisualStateManager.GoToState(this, "Full", false);
-        //    }
-        //}
+        public static readonly DependencyProperty WizardItemStyleProperty = DependencyProperty.Register(
+            "WizardItemStyle",
+            typeof (Style),
+            typeof (WizardHost),
+            new PropertyMetadata(default(Style)));
+
+        public Style WizardItemStyle
+        {
+            get { return (Style) GetValue(WizardItemStyleProperty); }
+            set { SetValue(WizardItemStyleProperty, value); }
+        }
+
+        public static readonly DependencyProperty ExecuteCommandProperty = DependencyProperty.Register(
+            "ExecuteCommand",
+            typeof (ICommand),
+            typeof (WizardHost),
+            new PropertyMetadata(default(RelayCommand)));
+
+        public RelayCommand ExecuteCommand
+        {
+            get { return (RelayCommand) GetValue(ExecuteCommandProperty); }
+            set { SetValue(ExecuteCommandProperty, value); }
+        }
     }
 }

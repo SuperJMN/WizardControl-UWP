@@ -23,7 +23,15 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Border x:Name="Root">
-                            <ItemsPresenter />
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ItemsPresenter />
+                                <Button Grid.Row="1" HorizontalAlignment="Center" Content="Ejecutar"
+                                        Command="{TemplateBinding ExecuteCommand}" />
+                            </Grid>
                         </Border>
                     </Border>
                 </ControlTemplate>
@@ -80,6 +88,18 @@
                                     </VisualState>
                                 </VisualStateGroup.States>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="Validation">
+                                <VisualState x:Name="Valid">
+                                    <VisualState.Setters>
+                                        <Setter Target="NextButton.Visibility" Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Invalid">
+                                    <VisualState.Setters>
+                                        <Setter Target="NextButton.Visibility" Value="Collapsed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
                         <Grid>
@@ -94,9 +114,9 @@
                                 <Grid>
                                     <ContentPresenter />
                                     <Grid Margin="10" VerticalAlignment="Bottom" x:Name="Navigation">
-                                        <Button HorizontalAlignment="Left" Content="&lt;Anterior"
+                                        <Button x:Name="BackButton" HorizontalAlignment="Left" Content="&lt;Anterior"
                                                 Command="{TemplateBinding PreviousCommand}" />
-                                        <Button HorizontalAlignment="Right" Content="Siguiente&gt;"
+                                        <Button x:Name="NextButton" HorizontalAlignment="Right" Content="Siguiente&gt;"
                                                 Command="{TemplateBinding NextCommand}" />
                                     </Grid>
                                 </Grid>
@@ -125,7 +145,8 @@
                                             <Setter Target="WizardControl.ItemsPanel">
                                                 <Setter.Value>
                                                     <ItemsPanelTemplate>
-                                                        <WrapGrid ItemWidth="500" ItemHeight="400" Orientation="Horizontal" />
+                                                        <WrapGrid ItemWidth="500" ItemHeight="400"
+                                                                  Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </Setter.Value>
                                             </Setter>
@@ -136,7 +157,7 @@
                                             <Setter Target="WizardControl.ItemsPanel">
                                                 <Setter.Value>
                                                     <ItemsPanelTemplate>
-                                                        <local:ExpandSelectedStackPanel/>
+                                                        <local:ExpandSelectedStackPanel />
                                                     </ItemsPanelTemplate>
                                                 </Setter.Value>
                                             </Setter>
@@ -147,6 +168,8 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <local:WizardControl x:Name="WizardControl" ItemsSource="{TemplateBinding Wizards}"
+                                             ExecuteCommand="{TemplateBinding ExecuteCommand}"
+                                             ItemContainerStyle="{TemplateBinding WizardItemStyle}"
                                              SelectedItem="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedWizard}"
                                              ItemTemplate="{TemplateBinding WizardTemplate}" />
                     </Border>

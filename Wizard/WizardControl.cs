@@ -1,29 +1,65 @@
-﻿using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-
-// The Templated Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234235
+﻿ // The Templated Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234235
 
 namespace Wizard
 {
+    using System.Linq;
     using System.Windows.Input;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
     using App4;
     using GalaSoft.MvvmLight.Command;
 
     public sealed class WizardControl : ListView
     {
+        public static readonly DependencyProperty GoNextCommandProperty = DependencyProperty.Register(
+            "GoNextCommand",
+            typeof (ICommand),
+            typeof (WizardControl),
+            new PropertyMetadata(default(RelayCommand)));
+
+        public static readonly DependencyProperty GoBackCommandProperty = DependencyProperty.Register(
+            "GoBackCommand",
+            typeof (ICommand),
+            typeof (WizardControl),
+            new PropertyMetadata(default(RelayCommand)));
+
+        public static readonly DependencyProperty ExecuteCommandProperty = DependencyProperty.Register(
+            "ExecuteCommand",
+            typeof (ICommand),
+            typeof (WizardControl),
+            new PropertyMetadata(default(RelayCommand)));
+
         private WizardHost host;
+
+        private VisualStateGroup sizeModes;
 
         public WizardControl()
         {
-            this.DefaultStyleKey = typeof(WizardControl);
+            DefaultStyleKey = typeof (WizardControl);
 
             Loaded += OnLoaded;
-            SizeChanged += OnSizeChanged;
             SelectionChanged += OnSelectionChanged;
 
             GoNextCommand = new RelayCommand(() => SelectedIndex++, () => SelectedIndex < Items.Count - 1);
             GoBackCommand = new RelayCommand(() => SelectedIndex--, () => SelectedIndex > 0);
+        }
+
+        public RelayCommand GoNextCommand
+        {
+            get { return (RelayCommand) GetValue(GoNextCommandProperty); }
+            set { SetValue(GoNextCommandProperty, value); }
+        }
+
+        public RelayCommand GoBackCommand
+        {
+            get { return (RelayCommand) GetValue(GoBackCommandProperty); }
+            set { SetValue(GoBackCommandProperty, value); }
+        }
+
+        public RelayCommand ExecuteCommand
+        {
+            get { return (RelayCommand) GetValue(ExecuteCommandProperty); }
+            set { SetValue(ExecuteCommandProperty, value); }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -65,11 +101,6 @@ namespace Wizard
             GoBackCommand.RaiseCanExecuteChanged();
         }
 
-        private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
-        {
-
-        }
-
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             return item is WizardItem;
@@ -82,7 +113,7 @@ namespace Wizard
 
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
-            var container = (ContentControl)element;
+            var container = (ContentControl) element;
 
             container.DataContext = item;
             container.Style = ItemContainerStyle;
@@ -102,31 +133,5 @@ namespace Wizard
                 SelectedItem = Items.First();
             }
         }
-
-        public static readonly DependencyProperty GoNextCommandProperty = DependencyProperty.Register(
-            "GoNextCommand",
-            typeof (ICommand),
-            typeof (WizardControl),
-            new PropertyMetadata(default(RelayCommand)));
-
-        public RelayCommand GoNextCommand
-        {
-            get { return (RelayCommand) GetValue(GoNextCommandProperty); }
-            set { SetValue(GoNextCommandProperty, value); }
-        }
-
-        public static readonly DependencyProperty GoBackCommandProperty = DependencyProperty.Register(
-            "GoBackCommand",
-            typeof (ICommand),
-            typeof (WizardControl),
-            new PropertyMetadata(default(RelayCommand)));
-
-        private VisualStateGroup sizeModes;
-
-        public RelayCommand GoBackCommand
-        {
-            get { return (RelayCommand) GetValue(GoBackCommandProperty); }
-            set { SetValue(GoBackCommandProperty, value); }
-        }
-    }    
+    }
 }

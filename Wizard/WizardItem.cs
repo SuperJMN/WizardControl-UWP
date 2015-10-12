@@ -114,5 +114,17 @@ namespace Wizard
             get { return (RelayCommand)GetValue(PreviousCommandProperty); }
             set { SetValue(PreviousCommandProperty, value); }
         }
+
+        public static readonly DependencyProperty IsValidProperty = DependencyProperty.Register(
+            "IsValid",
+            typeof (bool),
+            typeof (WizardItem),
+            new PropertyMetadata(default(bool)));
+
+        public bool IsValid
+        {
+            get { return (bool) GetValue(IsValidProperty); }
+            set { SetValue(IsValidProperty, value); }
+        }
     }
 }

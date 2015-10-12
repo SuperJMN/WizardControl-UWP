@@ -1,4 +1,4 @@
-﻿namespace App4
+﻿namespace Wizard
 {
     using System.ComponentModel;
     using System.Runtime.CompilerServices;

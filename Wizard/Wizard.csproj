@@ -96,11 +96,12 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="App.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SetterValueBindingHelper.cs" />
     <Compile Include="ExpandSelectedStackPanel.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="MainPage.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

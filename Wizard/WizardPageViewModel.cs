@@ -1,5 +1,7 @@
-﻿namespace App4
+﻿namespace Wizard
 {
+    using App4;
+
     public class WizardPageViewModel : ViewModelBase
     {
         private bool isValid;
