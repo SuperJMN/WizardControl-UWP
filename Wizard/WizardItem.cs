@@ -14,7 +14,7 @@ namespace Wizard
 
     public sealed class WizardItem : ContentControl
     {
-        private WizardControl selector;
+        private WizardControl wizardControl;
 
         public WizardItem()
         {
@@ -24,51 +24,53 @@ namespace Wizard
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            selector = UIMixin.FindAncestor<WizardControl>(this);
-            PreviousCommand = selector.GoBackCommand;
-            NextCommand = selector.GoNextCommand;
+            wizardControl = UIMixin.FindAncestor<WizardControl>(this);
+            PreviousCommand = wizardControl.GoBackCommand;
+            NextCommand = wizardControl.GoNextCommand;
+            ExecuteCommand = wizardControl.ExecuteCommand;
 
-            var vssHost = selector.GetChildOfType<Border>();
+            var vssHost = wizardControl.GetChildOfType<Border>();
             var stateGroups = VisualStateManager.GetVisualStateGroups(vssHost);
-            
+
             sizeModes = stateGroups.First(stateGroup => stateGroup.Name == "SizeModes");
-            UpdateStates();
+            UpdateSizeStates();
+            UpdateIsValidStates();
             sizeModes.CurrentStateChanged += SizeModesOnCurrentStateChanged;
-            selector.SelectionChanged += SelectorOnSelectionChanged;
+            wizardControl.SelectionChanged += WizardControlOnSelectionChanged;
         }
 
-        private void SelectorOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        private void WizardControlOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            UpdateStates();
+            UpdateSizeStates();
         }
 
         private void SizeModesOnCurrentStateChanged(object sender, VisualStateChangedEventArgs visualStateChangedEventArgs)
         {
-            UpdateStates();
+            UpdateSizeStates();
         }
 
-        private void UpdateStates()
+        private void UpdateSizeStates()
         {
-            var selectedItem = selector.SelectedItem;
+            var selectedItem = wizardControl.SelectedItem;
             if (sizeModes.CurrentState.Name == "Full")
             {
                 SetExpandedStateBasedOnOrder();
             }
             else
             {
-                
+
                 SetCompactStateBasedOnOrder(selectedItem);
             }
         }
 
         private void SetExpandedStateBasedOnOrder()
         {
-            var id = selector.IndexFromContainer(this);
-            var last = selector.Items.Count - 1;
+            var id = wizardControl.IndexFromContainer(this);
+            var last = wizardControl.Items.Count - 1;
 
             if (id == last)
             {
-                VisualStateManager.GoToState(this, "Last", false);
+                VisualStateManager.GoToState(this, "LastExpanded", false);
             }
             else
             {
@@ -83,12 +85,17 @@ namespace Wizard
                 GoToNone();
             }
 
-            var id = selector.IndexFromContainer(this);
-            var current = selector.SelectedIndex;
+            var id = wizardControl.IndexFromContainer(this);
+            var last = wizardControl.Items.Count - 1;
+            var current = wizardControl.SelectedIndex;
 
-            if (id <  current)
+            if (id < current)
             {
                 VisualStateManager.GoToState(this, "Previous", false);
+            }
+            else if (id == last)
+            {
+                VisualStateManager.GoToState(this, "LastCompact", false);
             }
             else if (id == current)
             {
@@ -133,14 +140,44 @@ namespace Wizard
 
         public static readonly DependencyProperty IsValidProperty = DependencyProperty.Register(
             "IsValid",
-            typeof (bool),
-            typeof (WizardItem),
-            new PropertyMetadata(default(bool)));
+            typeof(bool),
+            typeof(WizardItem),
+            new PropertyMetadata(default(bool), PropertyChangedCallback));
+
+        private static void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var source = (WizardItem)dependencyObject;
+            source.UpdateIsValidStates();
+        }
+
+        private void UpdateIsValidStates()
+        {
+            if (IsValid)
+            {
+                VisualStateManager.GoToState(this, "Valid", false);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, "Invalid", false);
+            }
+        }
 
         public bool IsValid
         {
-            get { return (bool) GetValue(IsValidProperty); }
+            get { return (bool)GetValue(IsValidProperty); }
             set { SetValue(IsValidProperty, value); }
+        }
+
+        public static readonly DependencyProperty ExecuteCommandProperty = DependencyProperty.Register(
+            "ExecuteCommand",
+            typeof(ICommand),
+            typeof(WizardItem),
+            new PropertyMetadata(default(RelayCommand)));
+
+        public RelayCommand ExecuteCommand
+        {
+            get { return (RelayCommand)GetValue(ExecuteCommandProperty); }
+            set { SetValue(ExecuteCommandProperty, value); }
         }
     }
 }
