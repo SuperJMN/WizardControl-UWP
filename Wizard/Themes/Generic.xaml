@@ -1,0 +1,213 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Wizard">
+
+
+    <Style TargetType="local:WizardControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:WizardControl">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SizeModes">
+                                <VisualStateGroup.States>
+                                    <VisualState x:Name="Full" />
+                                    <VisualState x:Name="Compact" />
+                                </VisualStateGroup.States>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Border x:Name="Root">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ItemsPresenter />
+                                <!--<Button Grid.Row="1" HorizontalAlignment="Center" Content="Ejecutar"
+                                        Command="{TemplateBinding ExecuteCommand}" />-->
+                            </Grid>
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:WizardItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:WizardItem">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SnappedModes">
+
+                                <VisualStateGroup.States>
+                                    <VisualState x:Name="BeforeCurrent">
+                                        <VisualState.Setters>
+                                            <Setter Target="Briefing.Visibility" Value="Visible" />
+                                            <Setter Target="ContentRoot.Visibility" Value="Collapsed" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Current">
+                                        <VisualState.Setters>
+                                            <Setter Target="Briefing.Visibility" Value="Collapsed" />
+                                            <Setter Target="ContentRoot.Visibility" Value="Visible" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                    <VisualState x:Name="AfterCurrent">
+                                        <VisualState.Setters>
+                                            <Setter Target="Briefing.Visibility" Value="Collapsed" />
+                                            <Setter Target="ContentRoot.Visibility" Value="Collapsed" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                </VisualStateGroup.States>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="FinishState">
+                                <VisualStateGroup.States>
+                                    <VisualState x:Name="NonLast">
+                                        <VisualState.Setters>
+                                            <Setter Target="ExecuteCommand.Visibility" Value="Collapsed" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Last">
+                                        <VisualState.Setters>
+                                            <Setter Target="ExecuteCommand.Visibility" Value="Visible" />
+                                            <Setter Target="NextButton.Visibility" Value="Collapsed" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup.States>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="ExpandedModes">
+
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Target="Briefing.Visibility" Value="Collapsed" />
+                                        <Setter Target="ContentRoot.Visibility" Value="Visible" />
+                                        <Setter Target="Navigation.Visibility" Value="Collapsed" />
+                                        <Setter Target="ExecuteCommand.Visibility" Value="Collapsed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="LastExpanded">
+                                    <VisualState.Setters>
+                                        <Setter Target="Briefing.Visibility" Value="Collapsed" />
+                                        <Setter Target="ContentRoot.Visibility" Value="Visible" />
+                                        <Setter Target="ContentRoot.Background" Value="Green" />
+                                        <Setter Target="Navigation.Visibility" Value="Collapsed" />
+                                        <Setter Target="ExecuteCommand.Visibility" Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="Validation">
+
+                                <VisualState x:Name="Valid">
+                                    <VisualState.Setters>
+                                        <!--<Setter Target="NextButton.Visibility" Value="Visible" />-->
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="Invalid">
+                                    <VisualState.Setters>
+                                        <!--<Setter Target="NextButton.Visibility" Value="Collapsed" />-->
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                            </VisualStateGroup>
+
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Border x:Name="Briefing">
+                                <TextBlock>BRIEFING</TextBlock>
+                            </Border>
+                            <Border Grid.Row="1" x:Name="ContentRoot">
+                                <Grid>
+                                    <ContentPresenter />
+                                    <Grid Margin="10" VerticalAlignment="Bottom" x:Name="Navigation">
+                                        <Button x:Name="BackButton" HorizontalAlignment="Left" Content="&lt;Anterior"
+                                                Command="{TemplateBinding PreviousCommand}" />
+                                        <Button x:Name="NextButton" HorizontalAlignment="Right" Content="Siguiente&gt;"
+                                                Command="{TemplateBinding NextCommand}" />
+                                        <Button x:Name="ExecuteCommand" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Ejecutar"
+                                                Command="{TemplateBinding ExecuteCommand}" />
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:WizardHost">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:WizardHost">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SizeModes">
+                                <VisualStateGroup.States>
+                                    <VisualState x:Name="Full">
+                                        <VisualState.Setters>
+                                            <Setter Target="WizardControl.ItemsPanel">
+                                                <Setter.Value>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapGrid ItemWidth="500" ItemHeight="400"
+                                                                  Orientation="Horizontal" />
+                                                    </ItemsPanelTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Compact">
+                                        <VisualState.Setters>
+                                            <Setter Target="WizardControl.ItemsPanel">
+                                                <Setter.Value>
+                                                    <ItemsPanelTemplate>
+                                                        <local:ExpandSelectedStackPanel />
+                                                    </ItemsPanelTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup.States>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <local:WizardControl x:Name="WizardControl" ItemsSource="{TemplateBinding Wizards}"
+                                             ExecuteCommand="{TemplateBinding ExecuteCommand}"
+                                             ItemContainerStyle="{TemplateBinding WizardItemStyle}"
+                                             SelectedItem="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedWizard}"
+                                             ItemTemplate="{TemplateBinding WizardTemplate}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
